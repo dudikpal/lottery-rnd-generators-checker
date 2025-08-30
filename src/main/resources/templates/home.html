@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lottery match with random numbers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/htmx.min.js"></script>
+
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    
+    <!-- Kezdés gomb középen -->
+    <div class="d-flex justify-content-center mb-4">
+        <button class="btn btn-primary btn-lg"
+                hx-get="/start"
+                hx-swap="innerHTML"
+                hx-target="#apiResultsContainer">
+            (Re)Generate random numbers
+        </button>
+    </div>
+    
+    <!-- Dinamikus API eredmények oszlopokban -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center mb-5" id="apiResultsContainer">
+        <!-- Eredmények ide töltődnek -->
+        <div class="col d-flex justify-content-center" th:each="entry : ${apiResults}">
+            <div class="card shadow-sm" style="width: 20rem;">
+                <div class="card-header text-center">
+                    <h5 class="mb-0" th:text="${entry.key}"></h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-center" th:each="num : ${entry.value}" th:text="${num}"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Találatok -->
+    <div class="d-flex justify-content-center flex-column align-items-center mt-4">
+        <button class="btn btn-success mb-3"
+                hx-get="/matchCheck"
+                hx-swap="innerHTML"
+                hx-target="#resultsContainer">
+            Találatok ellenőrzése
+        </button>
+    
+        <div id="resultsContainer" th:if="${getMatchResults}" class="d-flex justify-content-center flex-column align-items-center mt-4">
+            <h2 class="text-center">Találatok</h2>
+        
+            <div th:each="entry : ${getMatchResults.entrySet()}" class="mb-4">
+                <h4 th:text="${entry.key}"></h4> <!-- API neve -->
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="result : ${entry.value}">
+                        <strong>Dátum:</strong> <span th:text="${result.date}"></span><br/>
+                        <strong>Találatok száma:</strong> <span th:text="${result.matchPcs}"></span><br/>
+                        <strong>Nyertes számok:</strong>
+                        <span th:each="num : ${result.winningNumbers}" th:text="${num} + ' '"></span><br/>
+                        <strong>Nyeremény:</strong> <span th:text="${result.matchReward}"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+</html>

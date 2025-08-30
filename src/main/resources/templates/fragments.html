@@ -1,0 +1,29 @@
+<!-- API Results fragment -->
+<div th:fragment="apiResultsFragment">
+    <div class="col d-flex justify-content-center" th:each="entry : ${apiResults}">
+        <div class="card shadow-sm" style="width: 16rem;">
+            <div class="card-header text-center">
+                <h5 class="mb-0" th:text="${entry.key}"></h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-center" th:each="num : ${entry.value}" th:text="${num}"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Results fragment -->
+<div th:fragment="resultsFragment">
+    <h2 class="text-center">Találatok</h2>
+    <div th:each="entry : ${getMatchResults.entrySet()}">
+        <ul class="list-group">
+            <li class="list-group-item" th:each="result : ${entry.value}">
+                <strong>Dátum:</strong> <span th:text="${result.date}"></span><br/>
+                <strong>Nyertes számok:</strong>
+                <strong>Találatok száma:</strong> <span th:text="${result.matchPcs}"></span><br/>
+                <span th:each="num : ${result.winningNumbers}" th:text="${num} + ' '"></span><br/>
+                <strong>Nyeremény:</strong> <span th:text="${result.matchReward}"></span>
+            </li>
+        </ul>
+    </div>
+</div>

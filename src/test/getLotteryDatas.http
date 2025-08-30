@@ -1,0 +1,15 @@
+GET http://localhost:8080
+Accept: application/json
+###
+
+GET http://localhost:8080/api/lottery/start
+Accept: application/json
+###
+
+GET http://localhost:8080/api/lottery_datas/rnadc
+Accept: application/json
+###
+
+GET http://localhost:8080/api/lottery_datas/matchCheck
+Accept: application/json
+###
