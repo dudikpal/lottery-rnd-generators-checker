@@ -19,4 +19,4 @@ COPY --from=builder application/spring-boot-loader/ ./spring-boot-loader/
 COPY --from=builder application/application/ ./application/
 
 # indulás
-ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
