@@ -6,7 +6,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @ToString
-//@AllArgsConstructor
 public class LotteryDataDTO {
 
 	private String yearString;
