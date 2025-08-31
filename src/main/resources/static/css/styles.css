@@ -1,0 +1,96 @@
+/* -----------------------------
+   Globális beállítások
+--------------------------------*/
+body.bg-light {
+    background-color: #f8f9fa;
+}
+.container-custom {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* -----------------------------
+   Gombok
+--------------------------------*/
+.btn-center {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+}
+/* Találatok gomb alapból rejtve */
+#checkMatchesBtn {
+    /*display: none;*/
+}
+
+/* -----------------------------
+   Kártyák
+--------------------------------*/
+.card-custom {
+    width: 16rem;
+}
+.card-shadow {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1rem;
+}
+.card-header h4,
+.card-header h5 {
+    margin: 0;
+    text-align: center;
+}
+.list-group-item.text-center {
+    text-align: center;
+}
+
+.result-entry {
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+.lotto-number {
+    display: inline-flex;        /* középre igazítja a számot */
+    justify-content: center;
+    align-items: center;
+    width: 35px;                 /* fix szélesség */
+    height: 35px;                /* fix magasság */
+    border: 1px solid #333;      /* keret */
+    border-radius: 40px;          /* szép lekerekítés */
+    margin: 3px;                 /* térköz */
+    background-color: #f8f9fa;   /* világos háttér */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+
+/* -----------------------------
+   Striped lista
+--------------------------------*/
+.list-group-striped li:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+.list-group-striped li:nth-child(even) {
+    background-color: #ffffff;
+}
+
+/* -----------------------------
+   Responsive Grid
+--------------------------------*/
+.row-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+.col-center {
+    display: flex;
+    justify-content: center;
+}

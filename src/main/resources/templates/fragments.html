@@ -1,29 +1,56 @@
 <!-- API Results fragment -->
 <div th:fragment="apiResultsFragment">
-    <div class="col d-flex justify-content-center" th:each="entry : ${apiResults}">
-        <div class="card shadow-sm" style="width: 16rem;">
-            <div class="card-header text-center">
-                <h5 class="mb-0" th:text="${entry.key}"></h5>
+    <div class="row-custom">
+        <div class="col-center" th:each="entry : ${apiResults}">
+            <div class="card card-custom card-shadow">
+                <div class="card-header">
+                    <h5 th:text="${entry.key}">
+                        <span class="badge bg-secondary rounded-circle ms-1" data-bs-toggle="tooltip"
+                              title="Ez az API neve">?</span>
+                    </h5>
+                </div>
+                <ul class="list-group list-group-flush list-group-striped">
+                    <li class="list-group-item text-center" th:each="num : ${entry.value}" th:text="${num}">
+                        <span data-bs-toggle="tooltip" title="Generált szám">?</span>
+                    </li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-center" th:each="num : ${entry.value}" th:text="${num}"></li>
-            </ul>
         </div>
+    </div>
+    <div class="btn-center">
+        <button class="btn btn-success btn-lg" hx-get="/matchCheck"
+                hx-swap="innerHTML"
+                hx-target="#matchResultsContainer"
+                id="checkMatchesBtn">
+            Találatok ellenőrzése
+        </button>
     </div>
 </div>
 
 <!-- Results fragment -->
 <div th:fragment="resultsFragment">
-    <h2 class="text-center">Találatok</h2>
-    <div th:each="entry : ${getMatchResults.entrySet()}">
-        <ul class="list-group">
-            <li class="list-group-item" th:each="result : ${entry.value}">
-                <strong>Dátum:</strong> <span th:text="${result.date}"></span><br/>
-                <strong>Nyertes számok:</strong>
-                <strong>Találatok száma:</strong> <span th:text="${result.matchPcs}"></span><br/>
-                <span th:each="num : ${result.winningNumbers}" th:text="${num} + ' '"></span><br/>
-                <strong>Nyeremény:</strong> <span th:text="${result.matchReward}"></span>
-            </li>
-        </ul>
+    
+    <div class="row-custom" id="matchResultsContainer">
+        <div class="col-center" th:each="entry : ${getMatchResults}">
+            <div class="card card-custom card-shadow">
+                <div class="card-header">
+                    <span class="badge bg-secondary rounded-circle ms-1" data-bs-toggle="tooltip"
+                          title="Ez az API neve az eredményeknél">?</span>
+                
+                </div>
+                <ul class="list-group list-group-flush list-group-striped">
+                    <li class="list-group-item result-entry" th:each="result : ${entry.value}">
+                        Húzás dátum: <span th:text="${result.date}"></span><br>
+                        <!--<span data-bs-toggle="tooltip" title="Ez a sorsolás dátuma" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
+                        Lottószámok:<br><span th:each="num : ${result.winningNumbers}" th:text="${num}" class="lotto-number"></span><br>
+                        <!--<span data-bs-toggle="tooltip" title="A nyertes számok" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
+                        Találatok száma: <strong><span th:text="${result.matchPcs}"></span></strong><br>
+                        <!--<span data-bs-toggle="tooltip" title="Hány számot találtál el" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
+                        Nyeremény: <strong><span th:text="${result.matchReward}"></span></strong>
+                        <!--<span data-bs-toggle="tooltip" title="A nyeremény összege" class="badge bg-secondary rounded-circle ms-1">?</span>-->
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
