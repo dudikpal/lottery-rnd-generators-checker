@@ -15,7 +15,7 @@ public class ResultDTO {
 	private List<String> winningNumbers;
 	private List<String> randomNumbers;
 	//private Map<String, String> matchedNumbers;
-	private String matchPcs;
+	private Integer matchPcs;
 	private String matchReward;
 
 	/*public static void main(String[] args) {

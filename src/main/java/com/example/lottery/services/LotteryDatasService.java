@@ -7,9 +7,9 @@ import com.example.lottery.repositories.LotteryDataRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LotteryDatasService {
@@ -68,7 +69,6 @@ public class LotteryDatasService {
 		return lotteryDataDTOList;
 	}
 
-
 	private LotteryDataDTO inputLineToLotteryDatDTO(String inputLine) {
 
 		String[] lineArray = inputLine.split(";");
@@ -90,6 +90,55 @@ public class LotteryDatasService {
 		return new LotteryDataDTO(dates, pcsAndRewards, winningNumbers);
 	}
 
+	public List<ResultDTO> getMatchCheckingResult(List<LotteryDataDTO> lotteryDataDTOList, List<String> numbersFromApi) {
+
+		List<ResultDTO> resultDTOS = new ArrayList<>();
+
+		for (LotteryDataDTO lotteryDTO : lotteryDataDTOList) {
+
+			int matchCount = (int) lotteryDTO.getWinningNumbers().stream()
+					.filter(numbersFromApi::contains)
+					//.peek(n -> System.out.println("Matched: " + n)) // itt látod a tényleges egyezéseket
+					.count();
+
+			if (matchCount > 1) {
+
+				String prize = switch (matchCount) {
+					case 5 -> lotteryDTO.getMatch5Reward();
+					case 4 -> lotteryDTO.getMatch4Reward();
+					case 3 -> lotteryDTO.getMatch3Reward();
+					case 2 -> lotteryDTO.getMatch2Reward();
+					default -> "0";
+				};
+				resultDTOS.add(new ResultDTO(lotteryDTO.getDateString(), lotteryDTO.getWinningNumbers(), numbersFromApi, matchCount, prize));
+			}
+
+
+		}
+		resultDTOS.sort(Comparator.comparingInt(ResultDTO::getMatchPcs).reversed()
+				                .thenComparing(ResultDTO::getMatchReward).reversed());
+
+		return resultDTOS;
+	}
+
+	public List<String> getRandomNumbersFromRandomDotOrg() {
+
+		List<String> numbers = new ArrayList<>();
+
+		try {
+			URL url = new URL(RDO_URL);
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+			String line = in.readLine();
+
+			// Tipp: típusbiztos deszerializálás
+			numbers = Arrays.stream(line.split(" ")).toList();
+			in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return numbers;
+	}
 
 	public List<String> getRandomNumbersFromRNADC() {
 		List<String> sortedNumbers = new ArrayList<>();
@@ -100,7 +149,7 @@ public class LotteryDatasService {
 				BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 				String inputLine = in.readLine();
 
-				// Tipp: típusbiztos deszerializálás
+				// típusbiztos deszerializálás
 				List<Integer> numbers = new ObjectMapper()
 						.readValue(inputLine, new TypeReference<List<Integer>>() {
 						});
@@ -123,66 +172,5 @@ public class LotteryDatasService {
 
 		return sortedNumbers;
 	}
-
-
-	private List<String> hashSetToSortedList(HashSet set) {
-
-		List<String> result = new ArrayList<>(set);
-		Collections.sort(result);
-
-		return result;
-	}
-
-
-	public List<ResultDTO> getMatchCheckingResult(List<LotteryDataDTO> lotteryDataDTOList, List<String> numbersFromApi) {
-
-		List<ResultDTO> resultDTOS = new ArrayList<>();
-
-		for (LotteryDataDTO lotteryDTO : lotteryDataDTOList) {
-
-			int matchCount = (int) lotteryDTO.getWinningNumbers().stream()
-					.filter(numbersFromApi::contains)
-					.peek(n -> System.out.println("Matched: " + n)) // itt látod a tényleges egyezéseket
-					.count();
-
-			System.out.println("MatchCount: " + matchCount);
-			if (matchCount > 1) {
-
-				String prize = switch (matchCount) {
-					case 5 -> lotteryDTO.getMatch5Reward();
-					case 4 -> lotteryDTO.getMatch4Reward();
-					case 3 -> lotteryDTO.getMatch3Reward();
-					case 2 -> lotteryDTO.getMatch2Reward();
-					default -> "0";
-				};
-				resultDTOS.add(new ResultDTO(lotteryDTO.getDateString(), lotteryDTO.getWinningNumbers(), numbersFromApi, String.valueOf(matchCount), prize));
-			}
-
-
-		}
-		System.out.println(resultDTOS);
-		return resultDTOS;
-	}
-
-	public List<String> getRandomNumbersFromRandomDotOrg() {
-
-		List<String> numbers = new ArrayList<>();
-
-		try {
-			URL url = new URL(RDO_URL);
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-			String line = in.readLine();
-
-			// Tipp: típusbiztos deszerializálás
-			numbers = Arrays.stream(line.split(" ")).toList();
-			System.out.println(numbers);
-			in.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return numbers;
-	}
-
 
 }

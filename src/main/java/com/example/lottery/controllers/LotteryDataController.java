@@ -1,4 +1,5 @@
 package com.example.lottery.controllers;
+
 import com.example.lottery.dtos.LotteryDataDTO;
 import com.example.lottery.dtos.ResultDTO;
 import com.example.lottery.services.LotteryDatasService;
@@ -6,26 +7,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
 
+@Slf4j
 @Controller
 @AllArgsConstructor
 @Tag(name = "Download existing lottery data")
 public class LotteryDataController {
 
-	public LotteryDatasService lotteryDatasService;
-	List<LotteryDataDTO> lotteryDataDTOList;
-	List<String> numbersFromRNADC = new ArrayList<>();
-	List<String> numbersFromRDO = new ArrayList<>();
+	private final LotteryDatasService lotteryDatasService;
+	private List<LotteryDataDTO> lotteryDataDTOList;
+	private List<String> numbersFromRNADC = new ArrayList<>();
+	private List<String> numbersFromRDO = new ArrayList<>();
 
 	@GetMapping("/")
 	public String home(Model model) {
-		model.addAttribute("message", "Keyd[oldal");
+		log.info("Serving home page...");
 		lotteryDataDTOList = lotteryDatasService.getLotteryDatas();
+		log.debug("Loaded {} lottery records from DB/service", lotteryDataDTOList.size());
+
+		model.addAttribute("message", "Keyd[oldal");
 		model.addAttribute("results", new ArrayList<>());
 
 		return "home";
@@ -33,40 +39,35 @@ public class LotteryDataController {
 
 	@GetMapping("/start")
 	public String getAllDatas(Model model) {
+		log.info("Fetching random numbers from external APIs...");
 		numbersFromRNADC = lotteryDatasService.getRandomNumbersFromRNADC();
 		numbersFromRDO = lotteryDatasService.getRandomNumbersFromRandomDotOrg();
+
+		log.debug("randomnumberapi.com returned: {}", numbersFromRNADC);
+		log.debug("random.org returned: {}", numbersFromRDO);
+
 		Map<String, List<String>> getApisResults = new HashMap<>();
 		getApisResults.put("randomnumberapi.com", numbersFromRNADC);
 		getApisResults.put("random.org", numbersFromRDO);
 		model.addAttribute("apiResults", getApisResults);
 
-		// csak az API results konténert rendereljük
 		return "fragments :: apiResultsFragment";
-	}
-
-
-	@GetMapping("/download")
-	@Operation(summary = "Get existing lottery datas from lottery api")
-	@ApiResponse(responseCode = "201", description = "get lottery datas success")
-	public String getLotteryDatas () {
-
-		lotteryDataDTOList = lotteryDatasService.getLotteryDatas();
-
-		return  String.format("%s \n %s", lotteryDataDTOList.get(0).toString(), lotteryDataDTOList.get(1).toString()) ;
 	}
 
 	@GetMapping("/matchCheck")
 	public String getMatchCheckingResult(Model model) {
+		log.info("Checking lottery results against generated numbers...");
 
 		Map<String, List<ResultDTO>> getMatchResults = new HashMap<>();
-		getMatchResults.put("randomnumberapi.com", lotteryDatasService.getMatchCheckingResult(lotteryDataDTOList, numbersFromRNADC));
-		getMatchResults.put("random.org", lotteryDatasService.getMatchCheckingResult(lotteryDataDTOList, numbersFromRDO));
-		model.addAttribute("getMatchResults", getMatchResults);
-		System.out.println(getMatchResults);
+		getMatchResults.put("randomnumberapi.com",
+				lotteryDatasService.getMatchCheckingResult(lotteryDataDTOList, numbersFromRNADC));
+		getMatchResults.put("random.org",
+				lotteryDatasService.getMatchCheckingResult(lotteryDataDTOList, numbersFromRDO));
 
-		// csak a results konténert rendereljük
+		log.debug("Match results calculated: {}", getMatchResults);
+
+		model.addAttribute("getMatchResults", getMatchResults);
+
 		return "fragments :: resultsFragment";
 	}
-
-
 }
