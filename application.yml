@@ -1,0 +1,7 @@
+spring.messages.encoding=UTF-8
+
+logging.level.root=INFO
+logging.level.org.springframework.web=INFO
+logging.level.org.hibernate=WARN
+logging.level.com.example.lottery=DEBUG
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n

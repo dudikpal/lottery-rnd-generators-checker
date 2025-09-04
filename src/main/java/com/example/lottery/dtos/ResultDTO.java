@@ -13,10 +13,13 @@ public class ResultDTO {
 
 	private String date;
 	private List<String> winningNumbers;
-	private List<String> randomNumbers;
-	//private Map<String, String> matchedNumbers;
-	private Integer matchPcs;
+	//private List<String> randomNumbers;
+	private List<String> matchedNumbers;
+	private int matchPcs = 0;
 	private String matchReward;
+
+	/*public ResultDTO(String date, List<String> winningNumbers, int matchPcs, String matchReward) {
+	}*/
 
 	/*public static void main(String[] args) {
 

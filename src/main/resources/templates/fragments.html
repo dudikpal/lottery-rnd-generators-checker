@@ -10,15 +10,18 @@
                     </h5>
                 </div>
                 <ul class="list-group list-group-flush list-group-striped">
-                    <li class="list-group-item text-center" th:each="num : ${entry.value}" th:text="${num}">
+                    <li class="list-group-item text-center"
+                        th:each="num : ${entry.value}"
+                        th:text="${num}">
                         <span data-bs-toggle="tooltip" title="Generált szám">?</span>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="btn-center">
-        <button class="btn btn-success btn-lg" hx-get="/matchCheck"
+    <div class="btn-center" id="checkBtnContainer">
+        <button class="btn btn-success btn-lg"
+                hx-get="/matchCheck"
                 hx-swap="innerHTML"
                 hx-target="#matchResultsContainer"
                 id="checkMatchesBtn">
@@ -30,27 +33,55 @@
 <!-- Results fragment -->
 <div th:fragment="resultsFragment">
     
-    <div class="row-custom" id="matchResultsContainer">
-        <div class="col-center" th:each="entry : ${getMatchResults}">
-            <div class="card card-custom card-shadow">
-                <div class="card-header">
-                    <span class="badge bg-secondary rounded-circle ms-1" data-bs-toggle="tooltip"
-                          title="Ez az API neve az eredményeknél">?</span>
-                
+    <div class="row row-cols-1 row-cols-md-2 g-4" id="matchResultsContainer">
+        <div class="col" th:each="entry : ${getMatchResults}">
+            <div class="card h-100 shadow-lg border-0 rounded-4">
+                <div
+                    class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+                    <span class="fw-bold">Találati eredmények</span>
+                    <span class="fw-bold">Találati eredmények</span>
                 </div>
-                <ul class="list-group list-group-flush list-group-striped">
-                    <li class="list-group-item result-entry" th:each="result : ${entry.value}">
-                        Húzás dátum: <span th:text="${result.date}"></span><br>
-                        <!--<span data-bs-toggle="tooltip" title="Ez a sorsolás dátuma" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
-                        Lottószámok:<br><span th:each="num : ${result.winningNumbers}" th:text="${num}" class="lotto-number"></span><br>
-                        <!--<span data-bs-toggle="tooltip" title="A nyertes számok" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
-                        Találatok száma: <strong><span th:text="${result.matchPcs}"></span></strong><br>
-                        <!--<span data-bs-toggle="tooltip" title="Hány számot találtál el" class="badge bg-secondary rounded-circle ms-1">?</span><br/>-->
-                        Nyeremény: <strong><span th:text="${result.matchReward}"></span></strong>
-                        <!--<span data-bs-toggle="tooltip" title="A nyeremény összege" class="badge bg-secondary rounded-circle ms-1">?</span>-->
-                    </li>
-                </ul>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-4 pb-3 border-bottom" th:each="result : ${entry.value}">
+                            <p class="mb-1">
+                                <span class="text-muted">Dátum (év - hét):</span>
+                                <strong th:text="${result.date}"></strong>
+                            </p>
+                            <!--<p>
+                                <span class="text-muted">Lottószámok:</span><br>
+                                <span th:each="num : ${result.winningNumbers}"
+                                      th:text="${num}"
+                                      class="badge bg-secondary fs-6 me-1 lotto-number"></span>
+                            </p>-->
+                            <p>
+                                <span class="text-muted">Lottószámok:</span><br>
+                                <span class="badge fs-6 me-1 lotto-number"
+                                      th:classappend="${result.matchedNumbers.contains(num)} ? ' bg-success text-white fw-bold' : ' bg-secondary'"
+                                      th:each="num : ${result.winningNumbers}"
+                                      th:text="${num}">
+                                </span>
+                            </p>
+                            
+                            <p>
+                                <span class="text-muted">Találatok száma:</span>
+                                <span class="badge bg-info fs-6">
+                                <span th:text="${result.matchPcs}"></span>
+                            </span>
+                            </p>
+                            <p>
+                                <span class="text-muted">Nyeremény:</span>
+                                <span class="badge bg-success fs-5 px-3 py-2 shadow-sm">
+                                <strong><span
+                                    th:text="${#numbers.formatInteger(result.matchReward, 0, 'WHITESPACE')} + ' Ft'"></span></strong>
+
+                            </span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
+
 </div>

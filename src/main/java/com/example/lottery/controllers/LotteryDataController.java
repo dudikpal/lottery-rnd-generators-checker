@@ -27,6 +27,12 @@ public class LotteryDataController {
 
 	@GetMapping("/")
 	public String home(Model model) {
+
+		return "index";
+	}
+
+	@GetMapping("/start")
+	public String initialize(Model model) {
 		log.info("Serving home page...");
 		lotteryDataDTOList = lotteryDatasService.getLotteryDatas();
 		log.debug("Loaded {} lottery records from DB/service", lotteryDataDTOList.size());
@@ -37,8 +43,8 @@ public class LotteryDataController {
 		return "home";
 	}
 
-	@GetMapping("/start")
-	public String getAllDatas(Model model) {
+	@GetMapping("/main")
+	public String getAlldatas(Model model) {
 		log.info("Fetching random numbers from external APIs...");
 		numbersFromRNADC = lotteryDatasService.getRandomNumbersFromRNADC();
 		numbersFromRDO = lotteryDatasService.getRandomNumbersFromRandomDotOrg();

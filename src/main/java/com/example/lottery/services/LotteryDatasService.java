@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -45,7 +46,13 @@ public class LotteryDatasService {
 			}
 
 			in.close();
-			con.disconnect();*/
+			con.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(LotteryDatasService.class.getResourceAsStream("/lottery.txt")))) {
 
 			String line;
@@ -63,7 +70,7 @@ public class LotteryDatasService {
 		for (LotteryDataDTO data : lotteryDataDTOList) {
 
 			LotteryDataEntity entity = modelMapper.map(data, LotteryDataEntity.class);
-			lotteryDataRepository.save(entity);
+			//lotteryDataRepository.save(entity);
 		}
 
 		return lotteryDataDTOList;
@@ -75,6 +82,7 @@ public class LotteryDatasService {
 		List<String> dates = new ArrayList<>();
 		List<String> pcsAndRewards = new ArrayList<>();
 		List<String> winningNumbers = new ArrayList<>();
+		System.out.println(lineArray);
 
 		for (int i = 0; i < lineArray.length; i++) {
 
@@ -86,37 +94,40 @@ public class LotteryDatasService {
 				winningNumbers.add(lineArray[i]);
 			}
 		}
-
-		return new LotteryDataDTO(dates, pcsAndRewards, winningNumbers);
+		LotteryDataDTO dto = new LotteryDataDTO(dates, pcsAndRewards, winningNumbers);
+		System.out.println(dto);
+		return dto;
 	}
 
 	public List<ResultDTO> getMatchCheckingResult(List<LotteryDataDTO> lotteryDataDTOList, List<String> numbersFromApi) {
 
 		List<ResultDTO> resultDTOS = new ArrayList<>();
+		List<String> matchedNumbers = new ArrayList<>();
 
 		for (LotteryDataDTO lotteryDTO : lotteryDataDTOList) {
 
-			int matchCount = (int) lotteryDTO.getWinningNumbers().stream()
+			matchedNumbers = lotteryDTO.getWinningNumbers().stream()
 					.filter(numbersFromApi::contains)
 					//.peek(n -> System.out.println("Matched: " + n)) // itt látod a tényleges egyezéseket
-					.count();
+					.toList();
 
-			if (matchCount > 1) {
+			if (matchedNumbers.size() > 1) {
 
-				String prize = switch (matchCount) {
+				String prize = switch (matchedNumbers.size()) {
 					case 5 -> lotteryDTO.getMatch5Reward();
 					case 4 -> lotteryDTO.getMatch4Reward();
 					case 3 -> lotteryDTO.getMatch3Reward();
 					case 2 -> lotteryDTO.getMatch2Reward();
 					default -> "0";
 				};
-				resultDTOS.add(new ResultDTO(lotteryDTO.getDateString(), lotteryDTO.getWinningNumbers(), numbersFromApi, matchCount, prize));
+
+				ResultDTO resultDTO = new ResultDTO(lotteryDTO.getYearString() + " - " + lotteryDTO.getWeekString() + ". hét", lotteryDTO.getWinningNumbers(), matchedNumbers, matchedNumbers.size(), prize.replaceAll("\\D+", "").replace(" Ft", ""));
+
+				resultDTOS.add(resultDTO);
 			}
-
-
 		}
-		resultDTOS.sort(Comparator.comparingInt(ResultDTO::getMatchPcs).reversed()
-				                .thenComparing(ResultDTO::getMatchReward).reversed());
+		resultDTOS.sort(Comparator.comparingInt(ResultDTO::getMatchPcs)
+				                .thenComparing(dto -> Integer.parseInt(dto.getMatchReward())).reversed());
 
 		return resultDTOS;
 	}
@@ -138,6 +149,7 @@ public class LotteryDatasService {
 		}
 
 		return numbers;
+		//return new ArrayList<>(List.of("4","9","34","48","69"));
 	}
 
 	public List<String> getRandomNumbersFromRNADC() {
@@ -171,6 +183,9 @@ public class LotteryDatasService {
 		}
 
 		return sortedNumbers;
+
+
+		//return new ArrayList<>(List.of("4","35","38","59","84"));
 	}
 
 }
