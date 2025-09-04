@@ -3,10 +3,12 @@ package com.example.lottery.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+
+
 
 import java.util.Locale;
 
@@ -16,14 +18,14 @@ public class LocaleConfig implements WebMvcConfigurer {
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver slr = new SessionLocaleResolver();
-		slr.setDefaultLocale(Locale.forLanguageTag("hu")); // alapértelmezett magyar
+		slr.setDefaultLocale(Locale.ENGLISH);
 		return slr;
 	}
 
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-		lci.setParamName("lang"); // ?lang=hu vagy ?lang=en
+		lci.setParamName("lang");
 		return lci;
 	}
 
@@ -32,3 +34,5 @@ public class LocaleConfig implements WebMvcConfigurer {
 		registry.addInterceptor(localeChangeInterceptor());
 	}
 }
+
+
