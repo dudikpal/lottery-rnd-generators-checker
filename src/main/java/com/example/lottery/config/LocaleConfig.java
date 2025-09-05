@@ -15,17 +15,19 @@ import java.util.Locale;
 @Configuration
 public class LocaleConfig implements WebMvcConfigurer {
 
+	// Alapértelmezett locale
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver slr = new SessionLocaleResolver();
-		slr.setDefaultLocale(Locale.ENGLISH);
+		slr.setDefaultLocale(new Locale("hu")); // alapértelmezett magyar
 		return slr;
 	}
 
+	// Interceptor a ?lang= paraméterhez
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-		lci.setParamName("lang");
+		lci.setParamName("lang"); // ?lang=hu vagy ?lang=en
 		return lci;
 	}
 
@@ -34,5 +36,6 @@ public class LocaleConfig implements WebMvcConfigurer {
 		registry.addInterceptor(localeChangeInterceptor());
 	}
 }
+
 
 
