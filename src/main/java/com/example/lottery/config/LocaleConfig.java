@@ -26,6 +26,8 @@ public class LocaleConfig implements WebMvcConfigurer {
 		clr.setDefaultLocale(new Locale("hu"));
 		clr.setCookieName("localeInfo");
 		clr.setCookieMaxAge(3600 * 24 * 30); // 30 napig él
+		clr.setCookiePath("/");
+
 		return clr;
 	}
 
