@@ -3,6 +3,7 @@ package com.example.lottery.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,9 +19,14 @@ public class LocaleConfig implements WebMvcConfigurer {
 	// Alapértelmezett locale
 	@Bean
 	public LocaleResolver localeResolver() {
-		SessionLocaleResolver slr = new SessionLocaleResolver();
+		/*SessionLocaleResolver slr = new SessionLocaleResolver();
 		slr.setDefaultLocale(new Locale("hu")); // alapértelmezett magyar
-		return slr;
+		return slr;*/
+		CookieLocaleResolver clr = new CookieLocaleResolver();
+		clr.setDefaultLocale(new Locale("hu"));
+		clr.setCookieName("localeInfo");
+		clr.setCookieMaxAge(3600 * 24 * 30); // 30 napig él
+		return clr;
 	}
 
 	// Interceptor a ?lang= paraméterhez
