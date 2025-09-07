@@ -4,6 +4,7 @@ import lombok.*;
 import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @ToString
 public class LotteryDataDTO {

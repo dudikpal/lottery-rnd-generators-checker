@@ -55,7 +55,7 @@
                             <p>
                                 <span class="text-muted">Lottószámok:</span><br>
                                 <span class="badge fs-6 me-1 lotto-number"
-                                      th:classappend="${result.matchedNumbers.contains(num)} ? ' bg-success text-white fw-bold' : ' bg-secondary'"
+                                      th:classappend="${result.matchedNumbers.contains(num)} ? ' bg-danger text-white fw-bold' : ' bg-secondary'"
                                       th:each="num : ${result.winningNumbers}"
                                       th:text="${num}">
                                 </span>
@@ -63,7 +63,7 @@
                             
                             <p>
                                 <span class="text-muted">Találatok száma:</span>
-                                <span class="badge bg-info fs-6">
+                                <span class="badge bg-primary fs-6">
                                 <span th:text="${result.matchPcs}"></span>
                             </span>
                             </p>

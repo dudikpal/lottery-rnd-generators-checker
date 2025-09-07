@@ -6,6 +6,8 @@ import com.example.lottery.entities.LotteryDataEntity;
 import com.example.lottery.repositories.LotteryDataRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LotteryDatasService {
 
-	private final LotteryDataRepository lotteryDataRepository;
+	//private final LotteryDataRepository lotteryDataRepository;
 	private final String LOTTERY_DATA_URL = "https://bet.szerencsejatek.hu/cmsfiles/otos.csv";
 	private final String RNADC_URL = "http://www.randomnumberapi.com/api/v1.0/random?min=1&max=90&count=5";
 	private final String RDO_URL = "https://www.random.org/integer-sets/?sets=1&num=5&min=1&max=90&sort=on&order=index&format=plain&rnd=new";
